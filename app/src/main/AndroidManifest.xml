@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="honours.project.NavigationApp">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/compasslogo"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <receiver android:name="honours.project.NavigationApp.navigation.RemoteControlReceiver">
+            <intent-filter android:priority="10001">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="honours.project.NavigationApp.MainRemoteControlReceiver">
+            <intent-filter android:priority="10000">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="honours.project.NavigationApp.MainActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="honours.project.NavigationApp.settings.MainSettingsActivity"
+            android:label="@string/parametres"
+            android:launchMode="singleTask" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB6Tnnp4ZOYZUPuQYZ2v2t4Jt4IQhxVBcc" />
+
+        <!--<activity
+            android:name="honours.project.NavigationApp.proximite.CategoriesActivity"
+            android:label="@string/liste_categories" />
+        <activity
+            android:name="honours.project.NavigationApp.proximite.SelectPlaceActivity"
+            android:label="@string/etablissements" /> -->
+
+        <service
+            android:name="honours.project.NavigationApp.navigation.NavigationService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
+
+        <activity
+            android:name="honours.project.NavigationApp.navigation.NavigationActivity"
+            android:label="@string/navigation"
+            android:launchMode="singleTop"
+            android:parentActivityName="honours.project.NavigationApp.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="honours.project.NavigationApp.MainActivity" />
+        </activity>
+        <activity
+            android:name="honours.project.NavigationApp.route.routeDetails.DetailsActivity"
+            android:label="@string/details_itineraire"
+            android:launchMode="singleTask"
+            android:parentActivityName="honours.project.NavigationApp.navigation.NavigationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="honours.project.NavigationApp.navigation.NavigationActivity" />
+        </activity>
+
+        <service
+            android:name="honours.project.NavigationApp.MyAddressService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false"></service>
+    </application>
+
+</manifest>
