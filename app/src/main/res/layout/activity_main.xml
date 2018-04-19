@@ -17,23 +17,12 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:focusableInTouchMode="true"
-
         />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!--<CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/pref_bus_summ"
-            android:id="@+id/bus_checkbox"
-            android:layout_gravity="right"
-            android:layout_weight="1.1"
-            android:clickable="true"
-            android:onClick="toggleBus" />-->
 
         <AutoCompleteTextView
             android:id="@+id/visual_search"
@@ -56,19 +45,9 @@
             android:layout_height="match_parent"
             android:text="@string/recherche_vocale"
             android:clickable="true"
-            android:onClick="rechercheVocale"
+            android:onClick="VoiceSearch"
             android:layout_weight="1"
             android:layout_margin="5dp" />
-
-        <!--<Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/recherche_proximite"
-            android:clickable="true"
-            android:onClick="rechercheProximite"
-            android:layout_weight="1"
-            android:layout_margin="5dp" />-->
 
         <Button
             android:layout_width="match_parent"
@@ -78,7 +57,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:clickable="true"
-            android:onClick="monAdresse"
+            android:onClick="MyLocation"
             android:layout_margin="5dp" />
 
         <TextView
@@ -103,40 +82,15 @@
             android:clickable="true"
             android:onClick="details" />
 
-        <!-- <Button
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:text="@string/add_favorite"
-             android:layout_weight="1"
-             android:layout_margin="5dp"
-             android:clickable="true"
-             android:onClick="addToFavorite"
-             android:id="@+id/favorite_button_add"
-             android:nestedScrollingEnabled="false"
-             android:visibility="gone"/>
-
-         <Button
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:text="@string/remove_favorite"
-             android:layout_weight="1"
-             android:layout_margin="5dp"
-             android:clickable="true"
-             android:onClick="addToFavorite"
-             android:id="@+id/favorite_button_remove"
-             android:nestedScrollingEnabled="false"
-             android:visibility="gone"/>-->
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:onClick="naviguer"
+            android:onClick="StartNavigation"
             android:layout_weight="1"
             android:text="@string/commencer_la_navigation"
             android:layout_margin="5dp" />
     </LinearLayout>
-
 
 </LinearLayout>
 

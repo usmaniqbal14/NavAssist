@@ -7,9 +7,6 @@ import org.json.JSONObject;
 
 import honours.project.NavigationApp.R;
 
-/**
- * Created by lamarchelu on 05/05/16.
- */
 public class TransitStep extends Step {
     public final String departureTime;
     public TransitStep(Context context, JSONObject step) throws JSONException {

@@ -34,12 +34,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import honours.project.NavigationApp.R;
-//import honours.project.NavigationApp.route.favorite.Favorite;
-//import honours.project.NavigationApp.proximite.CategoriesActivity;
 
-/**
- * Created by lamarchelu on 03/05/16.
- */
 public class RouteHelper {
 
     private static final String TAG = "RouteHelper";
@@ -47,12 +42,12 @@ public class RouteHelper {
     private final Geocoder geocoder;
     private final GoogleApiClient mGoogleApiClient;
     private final Context context;
-    private final RouteCallback callback;
+    private final RouteInterface callback;
     private boolean calculatingItinerary = false;
     private boolean gettingAddress = false;
     private boolean geocoding = false;
 
-    public RouteHelper(GoogleApiClient mGoogleApiClient, Context context, RouteCallback callback) {
+    public RouteHelper(GoogleApiClient mGoogleApiClient, Context context, RouteInterface callback) {
         geocoder = new Geocoder(context, Locale.getDefault());
         this.mGoogleApiClient = mGoogleApiClient;
         this.context = context;
@@ -159,7 +154,7 @@ public class RouteHelper {
         }
     }
 
-    public void calculateItineraryWithGeocoding(final String s) {
+    public void calculateRouteWithGeocoding(final String s) {
         if(!geocoding) {
 
             if (mGoogleApiClient.isConnected()) {
@@ -234,63 +229,12 @@ public class RouteHelper {
         }
     }
 
-    /*private void calculateItineraryWithPlaceAPI(String s, final Location position) {
-        //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=50.688697,3.174045&rankby=distance&name=quick%20roubaix&key=AIzaSyB6Tnnp4ZOYZUPuQYZ2v2t4Jt4IQhxVBcc
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String url = CategoriesActivity.ENDPOINT + "?";
-        url += "location=" + position.getLatitude() + "," + position.getLongitude();
-
-        url += "&language=" + Locale.getDefault().getLanguage();
-        url += "&rankby=distance";
-        try {
-            url += "&key="+context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.getString("com.google.android.geo.API_KEY");
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(context,context.getString(R.string.erreur_505),Toast.LENGTH_SHORT).show();
-        }
-        url += "&name="+s.replace(" ","+");
-        Log.i(TAG, url);
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray results = response.getJSONArray("results");
-                            if (results.length() <= 0) {
-                                Toast.makeText(context, context.getString(R.string.adresse_introuvable), Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                JSONObject place = results.getJSONObject(0);
-                                JSONObject location = place.getJSONObject("geometry").getJSONObject("location");
-                                getRoute(place.getString("name"),new LatLng(position.getLatitude(), position.getLongitude()), new LatLng(location.getDouble("lat"),location.getDouble("lng")));
-                            }
-                        }catch(JSONException e){
-                            Toast.makeText(context,context.getString(R.string.erreur_505),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "error when getting places " + error);
-                error.printStackTrace();
-                if(error instanceof NoConnectionError){
-                    Toast.makeText(context, context.getString(R.string.erreur_connexion), Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(context, context.getString(R.string.erreur_505), Toast.LENGTH_SHORT).show();
-                }
-                //itineraryLayout.setVisibility(View.GONE);
-
-            }
-        });
-        //        // Add the request to the RequestQueue.
-        queue.add(req);
-    }*/
-
     public void getItinerary(final String name, LatLng depart, LatLng destination){
         getItinerary(name,depart,destination,false);
     }
     public void getItinerary(final String name, final LatLng depart, final LatLng destination, final boolean walking) {
-        Log.i(TAG, "Adresse trouvée, calcul de l'itinéraire");
+        Log.i(TAG, "\n" +
+                "Address found, route calculation");
         if(calculatingItinerary)
             return;
         calculatingItinerary = true;
@@ -366,14 +310,4 @@ public class RouteHelper {
             mTts.speak(speech, TextToSpeech.QUEUE_ADD, null);
         }
     }
-
-    /*public void getItineraryFromFavorite(Favorite favorite) {
-        Log.i(TAG, "calculate from favorite");
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, context.getString(R.string.erreur_autorisation), Toast.LENGTH_LONG).show();
-            return;
-        }
-        final Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        getRoute(favorite.name, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), new LatLng(favorite.lat, favorite.lng));
-    }*/
 }

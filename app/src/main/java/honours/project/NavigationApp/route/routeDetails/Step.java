@@ -10,9 +10,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-/**
- * Created by lamarchelu on 07/04/16.
- */
 public abstract class Step{
 
 //    private final String street;
@@ -39,6 +36,4 @@ public abstract class Step{
         polyline = PolyUtil.decode(jsonObject.getJSONObject("polyline").getString("points"));
 
     }
-
-
 }

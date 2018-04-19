@@ -15,7 +15,6 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:focusableInTouchMode="true"
-
         />
 
     <LinearLayout
@@ -134,7 +133,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:clickable="true"
-        android:onClick="monAdresse"
+        android:onClick="myAddress"
         android:visibility="visible" />
 
 </RelativeLayout>

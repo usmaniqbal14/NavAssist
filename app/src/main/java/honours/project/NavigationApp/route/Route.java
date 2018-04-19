@@ -15,9 +15,7 @@ import honours.project.NavigationApp.route.routeDetails.Step;
 import honours.project.NavigationApp.route.routeDetails.TransitStep;
 import honours.project.NavigationApp.route.routeDetails.WalkingStep;
 
-/**
- * Created by lamarchelu on 03/05/16.
- */
+
 public class Route {
     public final String startAddress;
     public final String destination;
@@ -49,22 +47,12 @@ public class Route {
                         if (!subStep.has("html_instructions")) {
                             subStep.put("html_instructions", step.getString("html_instructions"));
                         }
-//                        subStep.put("html_instructions", subStep.getString("html_instructions").split("<div")[0]);
-//                        if(j>0)
-//                            subStep.put("polyline",step.getJSONArray("steps").getJSONObject(j-1).getJSONObject("polyline"));
+//
                         steps.add(new WalkingStep(subStep));
                     }
-//                    JSONObject lastStep = step.getJSONArray("steps").getJSONObject(step.getJSONArray("steps").length()-1);
-//                    if(lastStep.getString("travel_mode").equals("WALKING")) {
-//                        lastStep.put("html_instructions", Html.fromHtml(lastStep.getString("html_instructions")).toString().split("\n\n")[1]);
-//                        lastStep.put("start_location", lastStep.getJSONObject("end_location"));
-//                    }
-//                    steps.add(new WalkingStep(lastStep));
+//
                 }
                 else{
-//                    if(i>0)
-//                        step.put("polyline",json_steps.getJSONObject(i-1).getJSONObject("polyline"));
-//                    step.put("html_instructions", step.getString("html_instructions").split("<div")[0]);
 
                     steps.add(new WalkingStep(step));
                 }
@@ -73,13 +61,6 @@ public class Route {
                 steps.add(new TransitStep(context,step));
             }
         }
-//        JSONObject lastStep = json_steps.getJSONObject(json_steps.length() - 1);
-//        if(lastStep.getString("travel_mode").equals("WALKING")) {
-//            Log.i("ITINERARY",Html.fromHtml(lastStep.getString("html_instructions")).toString());
-//            lastStep.put("html_instructions", Html.fromHtml(lastStep.getString("html_instructions")).toString().split("\n\n")[1]);
-//            lastStep.put("start_location", lastStep.getJSONObject("end_location"));
-//        }
-//        steps.add(new WalkingStep(lastStep));
 
         polyline = json.getJSONArray("routes").getJSONObject(0).getJSONObject("overview_polyline").getString("points");
         this.name = name;
@@ -109,5 +90,4 @@ public class Route {
         Location last = steps.getLast().end;
         return new LatLng(last.getLatitude(),last.getLongitude());
     }
-
 }

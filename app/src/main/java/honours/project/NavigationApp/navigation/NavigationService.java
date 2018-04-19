@@ -1,9 +1,7 @@
 package honours.project.NavigationApp.navigation;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -25,8 +23,6 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.os.ResultReceiver;
 import android.text.Html;
 import android.util.Log;
@@ -48,12 +44,12 @@ import java.util.Calendar;
 
 import honours.project.NavigationApp.R;
 import honours.project.NavigationApp.route.Route;
-import honours.project.NavigationApp.route.RouteCallback;
+import honours.project.NavigationApp.route.RouteInterface;
 import honours.project.NavigationApp.route.RouteHelper;
 import honours.project.NavigationApp.route.routeDetails.Step;
 import honours.project.NavigationApp.route.routeDetails.TransitStep;
 
-public class NavigationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, TextToSpeech.OnInitListener, RouteCallback {
+public class NavigationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, TextToSpeech.OnInitListener, RouteInterface {
 
     private static final String TAG = "NavigationService";
     public static final String BROADCAST_ACTION = "eu.project.proxygps.navigation.NavigationService";
@@ -117,7 +113,7 @@ public class NavigationService extends Service implements LocationListener, Goog
             return;
         }
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        //Premier lancement
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -204,7 +200,7 @@ public class NavigationService extends Service implements LocationListener, Goog
             showDirection();
             lastShowDirection = location;
         } else if (!this.arrived && current.equals(route.steps.getLast()) && current.end.distanceTo(location) < 10){
-            //Arrivée à destination
+            //Arrived at Destination
             this.arrived = true;
             showDirection(old);
         }
@@ -227,7 +223,7 @@ public class NavigationService extends Service implements LocationListener, Goog
             if(end.length > 1)
                 return end[1];
             else
-                return getString(R.string.vous_arrivez_a_destination);
+                return ("You have arrived at your destination");
         }
         else{
             return route.steps.get(current_id+1).narrative.split("<div")[0];
@@ -282,7 +278,7 @@ public class NavigationService extends Service implements LocationListener, Goog
             lastCalcul = Calendar.getInstance();
             routeHelper.getItinerary(route.name,new LatLng(location.getLatitude(),location.getLongitude()), route.getDest());
         }
-        Log.i(TAG, "Sortie de piste");
+        Log.i(TAG, "Exit");
         return current;
     }
 
@@ -396,49 +392,10 @@ public class NavigationService extends Service implements LocationListener, Goog
 
     }
 
-    /*private void setNotification() {
-        int icon = R.drawable.ic_notification_corsaire;
-
-        Intent resultIntent = new Intent(this, NavigationActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack
-        stackBuilder.addParentStack(NavigationActivity.class);
-        // Adds the Intent to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        // Gets a PendingIntent containing the entire back stack
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent closeIntent = new Intent(this, NavigationService.class);
-        closeIntent.putExtra("close", true);
-        PendingIntent closePendingIntent =
-                PendingIntent.getService(this, 0, closeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(icon).setContentTitle(getString(R.string.app_name)).setContentText(Html.fromHtml(getString(R.string.dans)+" "+distance+" m, "+getNarrative()))
-                .setContentIntent(resultPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setOngoing(true)
-                .addAction(android.R.drawable.ic_delete, "Quitter la navigation", closePendingIntent)
-                .build();
-
-        //notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
-        mNotifying = true;
-    }*/
-
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
-//    @Override
-//    protected void onHandleIntent(Intent intent) {
-//        //Logintent.getExtras().get("toto");
-//    }
 
     public int getDistance() {
         return distance;
@@ -473,9 +430,6 @@ public class NavigationService extends Service implements LocationListener, Goog
     }
 
     public void quit() {
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.remove(getString(R.string.saved_itinerary_key));
-//        editor.commit();
         stopSelf();
     }
 
@@ -495,6 +449,4 @@ public class NavigationService extends Service implements LocationListener, Goog
         //stop service
         stopSelf();
     }
-
-
 }

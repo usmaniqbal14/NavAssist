@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
 
-/**
- * Created by lamarchelu on 14/05/16.
- */
 public class MainRemoteControlReceiver extends BroadcastReceiver{
     private static final String TAG = "MainRemoteControlR";
 

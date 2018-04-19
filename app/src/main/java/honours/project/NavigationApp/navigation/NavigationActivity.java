@@ -50,7 +50,6 @@ import honours.project.NavigationApp.R;
 import honours.project.NavigationApp.route.routeDetails.DetailsActivity;
 import honours.project.NavigationApp.route.routeDetails.Step;
 import honours.project.NavigationApp.route.routeDetails.TransitStep;
-//import honours.project.NavigationApp.settings.MainSettingsActivity;
 
 public class NavigationActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback {
 
@@ -203,7 +202,6 @@ public class NavigationActivity extends AppCompatActivity implements SensorEvent
                 polyline.remove();
                 polyline = mMap.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(mService.getRoute().polyline)).color(getResources().getColor(R.color.colorAccent)));
         }
-
     }
 
     @Override
@@ -251,31 +249,6 @@ public class NavigationActivity extends AppCompatActivity implements SensorEvent
         //now getIntent() should always return the last received intent
     }
 
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-            case android.R.id.undo:
-                onBackPressed();
-                return true;
-            case R.id.action_settings:
-                Intent intent = new Intent(this, MainSettingsActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                // Log.i(TAG,"Item : "+item+" id : "+item.getItemId());
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
     public void details(View view) {
         Intent intent = new Intent(this, DetailsActivity.class);
         startActivity(intent);
@@ -297,9 +270,7 @@ public class NavigationActivity extends AppCompatActivity implements SensorEvent
                 if (vibrate && diff < 30 && diff != 0) {
                     vibrator.cancel();
                     vibrator.vibrate(300);
-                    //Log.i(TAG, "Mon angle : " + Math.round(bearing) + "  --- lieux : " + Math.round(angle));
                 }
-
             }
         }
     }
@@ -367,7 +338,7 @@ public class NavigationActivity extends AppCompatActivity implements SensorEvent
         }
     }
 
-    public void monAdresse(View v){
+    public void myAddress(View v){
         if(mBound)
             mService.getMyAddress(bearing);
     }

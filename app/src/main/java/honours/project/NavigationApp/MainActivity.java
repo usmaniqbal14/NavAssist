@@ -17,8 +17,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
@@ -26,7 +24,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +36,6 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -55,19 +51,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import honours.project.NavigationApp.route.Route;
-import honours.project.NavigationApp.route.RouteCallback;
+import honours.project.NavigationApp.route.RouteInterface;
 import honours.project.NavigationApp.route.RouteHelper;
 import honours.project.NavigationApp.route.routeDetails.DetailsActivity;
 import honours.project.NavigationApp.route.routeDetails.DetailsFragment;
-//import honours.project.NavigationApp.route.favorite.FavoriteHelper;
 import honours.project.NavigationApp.navigation.NavigationActivity;
 import honours.project.NavigationApp.navigation.NavigationService;
-//import honours.project.NavigationApp.proximite.CategoriesActivity;
-//import honours.project.NavigationApp.proximite.Place;
-//import honours.project.NavigationApp.settings.MainSettingsActivity;
 
-
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, RouteCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, RouteInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String TAG = "MainActivity";
@@ -84,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView infodistance;
     private boolean isExploreByTouchEnabled;
     private DetailsFragment detailsFragment;
-    //private FavoriteHelper favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         else
             setContentView(R.layout.activity_main);
 
-        //favorite = new FavoriteHelper(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setLogo(R.drawable.compasslogo1);
@@ -136,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return true;
                 }
             });
-            //updateFavorites();
             searchText.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -155,24 +143,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    /*public void updateFavorites() {
-        if (favorite == null) {
-            return;
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, favorite.getFavoriteKeys().toArray(new String[0]));
-        searchText.setAdapter(adapter);
-        if (route != null && route.getDest() != null) {
-            if (favorite.getFavoriteKeys().contains(route.name)) {
-                findViewById(R.id.favorite_button_add).setVisibility(View.GONE);
-                findViewById(R.id.favorite_button_remove).setVisibility(View.VISIBLE);
-            } else {
-                findViewById(R.id.favorite_button_add).setVisibility(View.VISIBLE);
-                findViewById(R.id.favorite_button_remove).setVisibility(View.GONE);
-            }
-        }
-    }*/
-
     public void search(View view) {
         //Select text to remove replace easily for new input
         View v = this.getCurrentFocus();
@@ -180,36 +150,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
-        /*Log.i(TAG, "check favorite of " + searchText.getText());
-        Log.i(TAG, "check favorite of " + favorite.getFavorites());
-        Log.i(TAG, String.valueOf(favorite.getFavorites().containsKey("Laffineur Olivier")));
-        if (favorite.getFavorites().containsKey(searchText.getText().toString())){
-            routeHelper.getItineraryFromFavorite(favorite.getFavorites().get(searchText.getText().toString()));
-        } else {
-            routeHelper.calculateItineraryWithGeocoding(searchText.getText().toString());
-        }*/
+       else {
+            routeHelper.calculateRouteWithGeocoding(searchText.getText().toString());
+        }
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(MainActivity.this, MainSettingsActivity.class);
-                startActivity(intent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -246,15 +191,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (isExploreByTouchEnabled) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            //((CheckBox) findViewById(R.id.bus_checkbox)).setChecked(sharedPref.getBoolean(getString(R.string.pref_bus_key), false));
             checkSavedItinerary(); //Because for other, the check is done onMapReady
             Intent intent = new Intent(this, MyAddressService.class);
             startService(intent);
-        } /*else {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
-        }*/
+        }
 
     }
 
@@ -308,16 +248,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void toggleBus(View view){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean bus = !sharedPref.getBoolean(getString(R.string.pref_bus_key), false);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(getString(R.string.pref_bus_key), bus);
-        editor.commit();
-        ((CheckBox)view).setChecked(bus);
-
-    }
-
     @Override
     public void callbackItinerary(Route route) {
         searchText.setText(route.name);
@@ -345,8 +275,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         searchText.clearFocus();
         this.route = route;
-        //updateFavorites();
-        //Log.i(TAG,route.getGPX());
     }
 
 
@@ -366,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapLongClick(LatLng latLng) {
                 clearMap();
                 markerEnd = mMap.addMarker(new MarkerOptions().position(latLng));
-                routeHelper.calculateItineraryWithGeocoding(latLng.latitude+","+latLng.longitude);
+                routeHelper.calculateRouteWithGeocoding(latLng.latitude+","+latLng.longitude);
             }
         });
         checkSavedItinerary();
@@ -382,46 +310,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             polyline.remove();
     }
 
-    public void rechercheVocale(View view) {
+    public void VoiceSearch(View view) {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
+                "Speak an Address or Place");
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
             Toast.makeText(this,
-                    getString(R.string.speech_not_supported),
+                    ("Sorry Voice Recognition not Supported"),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
-    /*public void rechercheProximite(View view) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, getString(R.string.erreur_autorisation), Toast.LENGTH_LONG).show();
-            return;
-        }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            Intent intent = new Intent(this, CategoriesActivity.class);
-            intent.putExtra("latitude", mLastLocation.getLatitude());
-            intent.putExtra("longitude", mLastLocation.getLongitude());
-            startActivityForResult(intent, REQ_PROXIMITE);
-        } else {
-            Toast.makeText(this, getString(R.string.erreur_localisation), Toast.LENGTH_LONG).show();
-        }
-    }*/
-
-    public void naviguer(View view) {
+    public void StartNavigation(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(R.string.erreur_autorisation), Toast.LENGTH_LONG).show();
             return;
         }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(mLastLocation == null){
-            Toast.makeText(this, getString(R.string.erreur_localisation), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Unable to Locate You", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -446,34 +358,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     searchText.setText(result.get(0));
-                    routeHelper.calculateItineraryWithGeocoding(result.get(0));
+                    routeHelper.calculateRouteWithGeocoding(result.get(0));
                 } else {
                     Toast.makeText(this, getText(R.string.erreur_vocale), Toast.LENGTH_LONG).show();
                 }
                 break;
             }
-            /*case REQ_PROXIMITE: {
-                if (resultCode == RESULT_OK && null != data) {
-                    Place place = new Place(data.getStringExtra("name"),data.getDoubleExtra("latitude",0),data.getDoubleExtra("longitude",0));
-                    searchText.setText(place.name);
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this,getString(R.string.erreur_autorisation),Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                    if (mLastLocation != null) {
-                        routeHelper.getRoute(place.name,new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()),new LatLng(place.location.getLatitude(),place.location.getLongitude()));
-                    }
-                    else{
-                        Toast.makeText(this,getString(R.string.erreur_localisation),Toast.LENGTH_LONG).show();
-                    }
-                }
-                break;
-            }*/
+
         }
     }
 
-    public void monAdresse(View v){
+    public void MyLocation(View v){
 //        routeHelper.getMyAddress();
         Log.i(TAG,"play myaddress pressed !");
         Intent myIntent = new Intent(this, MyAddressService.class);
@@ -494,25 +389,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent intent = new Intent(this, DetailsActivity.class);
         startActivity(intent);
     }
-
-    /*public void addToFavorite(View view) {
-        if (favorite == null || route == null) {
-            return;
-        }
-        if (route.getDest() != null) {
-            if(favorite.getFavoriteKeys().contains(route.name)){
-                //Delete favorite
-                favorite.delete(route.name);
-                Toast.makeText(this, R.string.favorite_deleted, Toast.LENGTH_LONG).show();
-            } else {
-                //Add favorite
-                favorite.add(route.name, route.getDest());
-                Toast.makeText(this, R.string.favorite_added, Toast.LENGTH_LONG).show();
-            }
-            updateFavorites();
-        } else {
-            Toast.makeText(this, R.string.calcul_itineraire, Toast.LENGTH_LONG).show();
-        }
-    }*/
-
 }

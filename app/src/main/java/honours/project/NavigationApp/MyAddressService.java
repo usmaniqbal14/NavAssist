@@ -28,10 +28,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 
 import honours.project.NavigationApp.route.Route;
-import honours.project.NavigationApp.route.RouteCallback;
+import honours.project.NavigationApp.route.RouteInterface;
 import honours.project.NavigationApp.route.RouteHelper;
 
-public class MyAddressService extends Service implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, TextToSpeech.OnInitListener, RouteCallback {
+public class MyAddressService extends Service implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, TextToSpeech.OnInitListener, RouteInterface {
     private static final String TAG = "MyAddressService";
     private AudioManager am;
     private GoogleApiClient mGoogleApiClient;
@@ -56,7 +56,7 @@ public class MyAddressService extends Service implements SensorEventListener, Go
         Log.i(TAG, MainRemoteControlReceiver.class.getPackage().getName() + " " + MainRemoteControlReceiver.class.getSimpleName());
 
 
-        //Premier lancement
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -137,9 +137,9 @@ public class MyAddressService extends Service implements SensorEventListener, Go
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "fin du service give my address");
+        Log.i(TAG, "give my address");
         if(am != null){
-            Log.i(TAG,"am ok");
+            Log.i(TAG,"ok");
             am.unregisterMediaButtonEventReceiver(componentName);
         }
         if(mTts != null){
